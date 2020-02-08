@@ -9,6 +9,10 @@ import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
+import {CTX} from './Store';
 
 import Chip from '@material-ui/core/Chip';
 
@@ -42,7 +46,15 @@ const styles = theme => ({
 });
 
 const Dashboard = (props) => {
+  
+  // CTX store
+  const [allChats] = React.useContext(CTX);
 
+  const topics = Object.keys(allChats);
+  
+  // local state
+  const [activeTopic, changeActiveTopic] = React.useState(topics[0]);
+  const [textValue, changeTextValue] = React.useState('');
   const { classes } = props;
 
   return (
@@ -52,16 +64,16 @@ const Dashboard = (props) => {
           Chat App
         </Typography>
         <Typography variant="h5" component="h5">
-            Topic Placeholder
+            {activeTopic}
         </Typography>
 
         <div className={classes.flex}>
           <div className={classes.topicsWindow}>
             <List>
               {
-                ['topic'].map(topic => (
-                  <ListItem key={topic} button>
-                      <ListItemText primary="Topic" />
+                topics.map(topic => (
+                  <ListItem key={topic} onClick={e => changeActiveTopic(e.target.innerText)} button>
+                      <ListItemText primary={topic} />
                   </ListItem>
                 ))
               }
@@ -69,16 +81,26 @@ const Dashboard = (props) => {
           </div>
           <div className={classes.chatWindow}>
             {
-              [{from: 'user', msg: 'hello'}].map( (chat, i) => (
-                <div className={classes.flex} div={i}>
+              allChats[activeTopic].map( (chat, i) => (
+                <div className={classes.flex} key={i}>
                   <Chip label={chat.from} className={classes.chip} />
-                  <Typography variant="p">{chat.msg}</Typography>
+                  <Typography variant="body1" gutterBottom>{chat.msg}</Typography>
                 </div>
               ))
             }
           </div>
         </div>
         <div className={classes.flex}> 
+        <TextField
+          label="Send a chat"
+          className={classes.chatBox}
+          value={textValue}
+          onChange={e => changeTextValue(e.target.value)}
+          margin="normal"
+        />
+        <Button variant="contained" color="primary">
+          Send
+        </Button>
         </div>
       </Paper>
     </div>
