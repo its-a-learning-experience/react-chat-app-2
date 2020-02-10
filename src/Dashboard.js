@@ -48,7 +48,7 @@ const styles = theme => ({
 const Dashboard = (props) => {
   
   // CTX store
-  const [allChats] = React.useContext(CTX);
+  const {allChats, sendChatAction, user} = React.useContext(CTX);
 
   const topics = Object.keys(allChats);
   
@@ -98,7 +98,14 @@ const Dashboard = (props) => {
           onChange={e => changeTextValue(e.target.value)}
           margin="normal"
         />
-        <Button variant="contained" color="primary">
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={() => {
+            sendChatAction({from: user, msg: textValue, topic: activeTopic});
+            changeTextValue('');
+          }}
+        >
           Send
         </Button>
         </div>
